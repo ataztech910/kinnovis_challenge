@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import Amplify from "aws-amplify";
-import * as awsmobile from "../aws/src/aws-exports.js";
+import awsmobile from "../aws/src/aws-exports.js";
 
 Amplify.configure(awsmobile);
 

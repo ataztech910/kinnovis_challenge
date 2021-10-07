@@ -5,8 +5,9 @@ import {
   InventoryMutation,
   InventoryState,
 } from "@/types/IInventory";
-import { DataStore } from "@aws-amplify/datastore";
 import { InventoryModel } from "../../../aws/src/models";
+import { allInventory } from "@/models/InventoryModel";
+
 
 export const state: InventoryState = {
   inventory: [],
@@ -33,12 +34,15 @@ export const actions: InventoryAction = {
     commit("setInventoryItem", inventoryItem);
   },
   initInventory: ({ commit }) => {
-    const models = DataStore.query(InventoryModel);
-    models.then((result: InventoryModel[]) => {
-      if (result.length > 0) {
-        commit("setInventory", result);
-      }
-    });
+    allInventory
+      .catch((e) => {
+        console.log(e, "Error connection");
+      })
+      .then((result: void | InventoryModel[]) => {
+        if (result && result.length > 0) {
+          commit("setInventory", result);
+        }
+      });
   },
 };
 
