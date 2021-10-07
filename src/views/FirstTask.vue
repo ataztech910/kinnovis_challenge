@@ -7,18 +7,9 @@
       <div class="FirstTask__raw__cell">Level</div>
       <div class="FirstTask__raw__cell"></div>
     </div>
-    <div class="FirstTask__raw" v-for="item in inventory" :key="item.id">
-      <div class="FirstTask__raw__cell">{{ item.sku }}</div>
-      <div class="FirstTask__raw__cell">{{ item.name }}</div>
-      <div class="FirstTask__raw__cell">
-        {{ mutateDate(item.bestBeforeDate) }}
-      </div>
-      <div class="FirstTask__raw__cell">{{ item.inventoryLevel }}</div>
-      <div class="FirstTask__raw__cell">
-        <span>Edit</span>
-        <span>Delete</span>
-      </div>
-    </div>
+    <template v-for="item in inventory" >
+      <InventoryRaw :item="item" :key="item.id" />
+    </template>
   </div>
 </template>
 
@@ -26,25 +17,22 @@
 import { Component, Vue } from "vue-property-decorator";
 import { namespace, Mutation, Action, Getter } from "vuex-class";
 import { InventoryModel } from "../../aws/src/models";
+import InventoryRaw from "@/components/InventoryRaw.vue";
 const InventoryGetterNames = namespace("inventory", Getter);
 const InventoryActionNames = namespace("inventory", Action);
 const InventoryMutationNames = namespace("inventory", Mutation);
 
-@Component
+@Component({
+  components: {
+    InventoryRaw,
+  },
+})
 export default class FirstTask extends Vue {
   @InventoryGetterNames inventory: InventoryModel[];
   @InventoryActionNames initInventory: () => void;
   @InventoryMutationNames setInventory: (newState: InventoryModel) => void;
   created(): void {
     this.initInventory();
-  }
-
-  // This function here in case if API have a different formatting for dates like AWS for example
-  mutateDate(awsFormattedDate: string): string {
-    const dateFromString = new Date(awsFormattedDate);
-    return `${dateFromString.getDate()}.${
-      dateFromString.getMonth() + 1
-    }.${dateFromString.getFullYear()}`;
   }
 }
 </script>
