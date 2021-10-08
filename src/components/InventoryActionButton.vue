@@ -34,9 +34,10 @@ export default class InventoryActionButton extends Vue {
   actOnEvent(): void {
     this.updateSelectedItem({
       id: this.id,
-      action: ACTION_NAMES[this.icon],
+      action: (ACTION_NAMES as any)[this.icon],
     });
   }
+
 }
 </script>
 

@@ -113,14 +113,14 @@ export default class InventoryPopup extends Vue {
   name?: string = "";
   selectedItem: ISelectedItemAction;
   stringValues = STRING_VALUES;
-  errorList: [];
+  errorList: [boolean, boolean];
   error: boolean;
 
-  get getItem() {
+  get getItem(): InventoryModel | null | undefined {
     this.errorList = [false, false];
     const item =
-      this.getSelectedItem!.id !== null
-        ? this.getItemById(this.getSelectedItem.id)![0]
+      this.getSelectedItem?.id !== null
+        ? this.getItemById(this.getSelectedItem.id)?.[0]
         : null;
     if (item) {
       this.bestBeforeDate = item.bestBeforeDate;
@@ -134,7 +134,7 @@ export default class InventoryPopup extends Vue {
     return this.error;
   }
 
-  async finishForm(): void {
+  async finishForm(): Promise<void> {
     if (this.getSelectedItem.action === ACTION_NAMES.edit) {
       this.updateData();
     } else if (this.getSelectedItem.action === ACTION_NAMES.bin) {
@@ -148,7 +148,7 @@ export default class InventoryPopup extends Vue {
     if (this.bestBeforeDate === "") {
       this.errorList[0] = true;
     }
-    if (this.inventoryLevel.toString() === "") {
+    if (this.inventoryLevel?.toString() === "") {
       this.errorList[1] = true;
     }
     console.log({
@@ -173,17 +173,17 @@ export default class InventoryPopup extends Vue {
   }
 
   removeData(): void {
-    this.deleteFromInventory(this.getItem);
+    this.getItem && this.deleteFromInventory(this.getItem);
     this.closePopup();
   }
 
   updateData(): void {
     this.validate();
     if (!this.errorList[0] && !this.errorList[1]) {
-      const item = { ...this.getItem };
+      const item = { ...this.getItem } as any;
       item.bestBeforeDate = this.bestBeforeDate;
       item.inventoryLevel = this.inventoryLevel;
-      this.updateInventory(item);
+      this.updateInventory(item as InventoryModel);
       this.closePopup();
     }
   }
