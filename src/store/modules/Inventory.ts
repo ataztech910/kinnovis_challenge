@@ -8,11 +8,11 @@ import {
 } from "@/types/IInventory";
 import { InventoryModel } from "../../../aws/src/models";
 import {
-  allInventory, createInventory,
+  allInventory,
+  createInventory,
   deleteInventory,
-  updateInventory
+  updateInventory,
 } from "@/models/InventoryModel";
-import { DataStore } from "aws-amplify";
 
 export const state: InventoryState = {
   inventory: [],
@@ -30,9 +30,9 @@ export const getters: InventoryGetter = {
       return state.inventory.filter(
         (item) =>
           (state.searchValue &&
-            item.sku!.toString().includes(state.searchValue.toLowerCase())) ||
+            item.sku?.toString().includes(state.searchValue.toLowerCase())) ||
           (state.searchValue &&
-            item.name!.toLowerCase().includes(state.searchValue.toLowerCase()))
+            item.name?.toLowerCase().includes(state.searchValue.toLowerCase()))
       );
     }
     return state.inventory;
